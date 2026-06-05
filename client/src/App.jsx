@@ -6,20 +6,19 @@ import { InclineWidget } from "./components/InclineWidget.jsx";
 import { DistanceWidget } from "./components/DistanceWidget.jsx";
 import { ElapsedWidget } from "./components/ElapsedWidget.jsx";
 
-export default function App() {
-  const { telemetry, connected } = useTreadmill();
+function TreadmillPanel({ id }) {
+  const { telemetry, connected } = useTreadmill(id);
 
   return (
-    <div style={styles.root}>
-      {/* Status bar */}
+    <div style={styles.panel}>
       <div style={styles.statusBar}>
         <span style={{ ...styles.dot, background: connected ? "#66bb6a" : "#ef5350" }} />
         <span style={styles.statusText}>
-          {connected ? "treadmill connected" : "treadmill connecting…"}
+          {`treadmill ${id} `}
+          {connected ? "connected" : "connecting…"}
         </span>
       </div>
 
-      {/* Widget row */}
       <div style={styles.widgetRow}>
         <SpeedWidget value={telemetry.speed} />
         <InclineWidget value={telemetry.incline} />
@@ -31,6 +30,15 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <div style={styles.root}>
+      <TreadmillPanel id={1} />
+      <TreadmillPanel id={2} />
+    </div>
+  );
+}
+
 const styles = {
   root: {
     position: "fixed",
@@ -38,14 +46,18 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-end",
-    alignItems: "center",
+    alignItems: "stretch",
     pointerEvents: "none",
     padding: "0 0 32px",
+    gap: 16,
+  },
+  panel: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 8,
   },
   statusBar: {
-    position: "absolute",
-    top: 16,
-    right: 20,
     display: "flex",
     alignItems: "center",
     gap: 8,

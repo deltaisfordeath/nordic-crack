@@ -11,7 +11,7 @@ const INITIAL = {
   calories: null,
 };
 
-export function useTreadmill() {
+export function useTreadmill(treadmillId) {
   const [telemetry, setTelemetry] = useState(INITIAL);
   const [connected, setConnected] = useState(false);
   const wsRef = useRef(null);
@@ -27,7 +27,7 @@ export function useTreadmill() {
       ws.onmessage = (evt) => {
         try {
           const msg = JSON.parse(evt.data);
-          if (msg.type === "telemetry") {
+          if (msg.type === "telemetry" && msg.treadmill === treadmillId) {
             setTelemetry((prev) => ({ ...prev, ...msg.data }));
           } else if (msg.type === "status" && msg.connected === false) {
             setTelemetry(INITIAL);
@@ -51,7 +51,7 @@ export function useTreadmill() {
       clearTimeout(reconnectTimer.current);
       wsRef.current?.close();
     };
-  }, []);
+  }, [treadmillId]);
 
   return { telemetry, connected };
 }
