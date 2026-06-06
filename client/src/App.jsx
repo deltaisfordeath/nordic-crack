@@ -5,6 +5,7 @@ import { HeartRateWidget } from "./components/HeartRateWidget.jsx";
 import { InclineWidget } from "./components/InclineWidget.jsx";
 import { DistanceWidget } from "./components/DistanceWidget.jsx";
 import { ElapsedWidget } from "./components/ElapsedWidget.jsx";
+import { ReplayControls } from "./components/ReplayControls.jsx";
 
 function TreadmillPanel({ id }) {
   const { telemetry, connected } = useTreadmill(id);
@@ -33,6 +34,9 @@ function TreadmillPanel({ id }) {
 export default function App() {
   return (
     <div style={styles.root}>
+      <div style={styles.replayRow}>
+        <ReplayControls />
+      </div>
       <TreadmillPanel id={1} />
       <TreadmillPanel id={2} />
     </div>
@@ -48,8 +52,13 @@ const styles = {
     justifyContent: "flex-end",
     alignItems: "stretch",
     pointerEvents: "none",
-    padding: "0 0 32px",
+    padding: "16px 0 32px",
     gap: 16,
+  },
+  replayRow: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "auto",
   },
   panel: {
     display: "flex",
