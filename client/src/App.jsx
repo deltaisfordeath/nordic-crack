@@ -4,14 +4,13 @@ import { SpeedWidget } from "./components/SpeedWidget.jsx";
 import { HeartRateWidget } from "./components/HeartRateWidget.jsx";
 import { InclineWidget } from "./components/InclineWidget.jsx";
 import { DistanceWidget } from "./components/DistanceWidget.jsx";
-import { ElapsedWidget } from "./components/ElapsedWidget.jsx";
 import { ReplayControls } from "./components/ReplayControls.jsx";
 
-function TreadmillPanel({ id }) {
+function TreadmillPanel({ id, side }) {
   const { telemetry, connected } = useTreadmill(id);
 
   return (
-    <div style={styles.panel}>
+    <div style={{ ...styles.panel, alignItems: side === "left" ? "flex-start" : "flex-end" }}>
       <div style={styles.statusBar}>
         <span style={{ ...styles.dot, background: connected ? "#66bb6a" : "#ef5350" }} />
         <span style={styles.statusText}>
@@ -20,12 +19,11 @@ function TreadmillPanel({ id }) {
         </span>
       </div>
 
-      <div style={styles.widgetRow}>
-        <SpeedWidget value={telemetry.speed} />
-        <InclineWidget value={telemetry.incline} />
-        <HeartRateWidget value={telemetry.heartRate} />
+      <div style={styles.widgetStack}>
+        {telemetry.incline !== 0 && <InclineWidget value={telemetry.incline} />}
         <DistanceWidget value={telemetry.distance} />
-        <ElapsedWidget value={telemetry.elapsed} />
+        <HeartRateWidget value={telemetry.heartRate} />
+        <SpeedWidget value={telemetry.speed} />
       </div>
     </div>
   );
@@ -37,8 +35,10 @@ export default function App() {
       <div style={styles.replayRow}>
         <ReplayControls />
       </div>
-      <TreadmillPanel id={1} />
-      <TreadmillPanel id={2} />
+      <div style={styles.panelsRow}>
+        <TreadmillPanel id={1} side="left" />
+        <TreadmillPanel id={2} side="right" />
+      </div>
     </div>
   );
 }
@@ -49,21 +49,23 @@ const styles = {
     inset: 0,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-end",
-    alignItems: "stretch",
+    justifyContent: "space-between",
     pointerEvents: "none",
-    padding: "16px 0 32px",
-    gap: 16,
+    padding: "16px 32px 32px",
   },
   replayRow: {
     display: "flex",
     justifyContent: "center",
-    marginBottom: "auto",
+  },
+  panelsRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
   },
   panel: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
     gap: 8,
   },
   statusBar: {
@@ -88,12 +90,9 @@ const styles = {
     color: "rgba(255,255,255,0.55)",
     letterSpacing: "0.06em",
   },
-  widgetRow: {
+  widgetStack: {
     display: "flex",
-    flexWrap: "wrap",
+    flexDirection: "column",
     gap: 12,
-    justifyContent: "center",
-    alignItems: "flex-end",
-    padding: "0 16px",
   },
 };
