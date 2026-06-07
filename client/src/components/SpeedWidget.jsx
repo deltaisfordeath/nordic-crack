@@ -8,6 +8,7 @@ const START_DEG = 150;
 const SWEEP_DEG = 240;
 const MIN_SPEED = 3;
 const MAX_SPEED = 9;
+const ARC_LENGTH = R * SWEEP_DEG * (Math.PI / 180);
 
 function toRad(deg) {
   return (deg * Math.PI) / 180;
@@ -43,6 +44,7 @@ function valueDeg(mph) {
 
 const TICK_SPEEDS = [3, 4, 5, 6, 7, 8, 9];
 const LABEL_SPEEDS = [3, 6, 9];
+const TRACK_PATH = arc(START_DEG, START_DEG + SWEEP_DEG);
 
 export function SpeedWidget({ value }) {
   const color = speedColor(value);
@@ -52,13 +54,11 @@ export function SpeedWidget({ value }) {
     value !== null
       ? Math.max(0, Math.min(1, (value - MIN_SPEED) / (MAX_SPEED - MIN_SPEED)))
       : 0;
+
   const valDeg = value !== null ? valueDeg(value) : START_DEG;
-  const trackEnd = START_DEG + SWEEP_DEG;
-
-  const trackPath = arc(START_DEG, trackEnd);
-  const fillPath = value !== null && ratio > 0 ? arc(START_DEG, valDeg) : null;
-
-  const [nx, ny] = pt(valDeg, R - 16);
+  // Needle is drawn pointing straight up (270°); rotate to valDeg
+  const needleRotation = valDeg - 270;
+  const dashOffset = ARC_LENGTH * (1 - ratio);
 
   return (
     <div style={styles.card}>
@@ -66,24 +66,28 @@ export function SpeedWidget({ value }) {
       <svg width="200" height="148" viewBox="0 0 200 148">
         {/* Background track */}
         <path
-          d={trackPath}
+          d={TRACK_PATH}
           fill="none"
           stroke="rgba(255,255,255,0.1)"
           strokeWidth={TRACK_W}
           strokeLinecap="round"
         />
 
-        {/* Colored fill arc */}
-        {fillPath && (
-          <path
-            d={fillPath}
-            fill="none"
-            stroke={color}
-            strokeWidth={TRACK_W}
-            strokeLinecap="round"
-            style={{ filter: `drop-shadow(0 0 5px ${color}88)` }}
-          />
-        )}
+        {/* Animated fill arc via stroke-dashoffset */}
+        <path
+          d={TRACK_PATH}
+          fill="none"
+          stroke={color}
+          strokeWidth={TRACK_W}
+          strokeLinecap="round"
+          strokeDasharray={ARC_LENGTH}
+          strokeDashoffset={dashOffset}
+          opacity={ratio > 0.01 ? 1 : 0}
+          style={{
+            transition: "stroke-dashoffset 0.35s ease-out, stroke 0.25s ease-out",
+            filter: `drop-shadow(0 0 5px ${color}88)`,
+          }}
+        />
 
         {/* Tick marks */}
         {TICK_SPEEDS.map((mph) => {
@@ -106,22 +110,36 @@ export function SpeedWidget({ value }) {
           );
         })}
 
-        {/* Needle */}
+        {/* Animated needle — rotates via CSS transform on a <g> */}
         {value !== null && (
-          <>
+          <g
+            style={{
+              transform: `rotate(${needleRotation}deg)`,
+              transformOrigin: `${CX}px ${CY}px`,
+              transition: "transform 0.35s ease-out",
+            }}
+          >
             <line
               x1={CX}
               y1={CY}
-              x2={nx.toFixed(2)}
-              y2={ny.toFixed(2)}
+              x2={CX}
+              y2={CY - (R - 16)}
               stroke="white"
               strokeWidth={2.5}
               strokeLinecap="round"
             />
-            <circle cx={CX} cy={CY} r={6} fill={color} />
-            <circle cx={CX} cy={CY} r={3} fill="white" />
-          </>
+          </g>
         )}
+
+        {/* Pivot dot — rendered above needle */}
+        <circle
+          cx={CX}
+          cy={CY}
+          r={6}
+          fill={color}
+          style={{ transition: "fill 0.25s ease-out" }}
+        />
+        <circle cx={CX} cy={CY} r={3} fill="white" />
 
         {/* Value readout */}
         <text
@@ -133,6 +151,7 @@ export function SpeedWidget({ value }) {
           fontWeight={700}
           fontFamily="system-ui, -apple-system, sans-serif"
           dominantBaseline="middle"
+          style={{ transition: "fill 0.25s ease-out" }}
         >
           {display}
         </text>
