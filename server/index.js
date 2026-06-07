@@ -264,9 +264,9 @@ function startSimulation() {
       t.lastTickMs = now;
       tick += 1;
 
-      const speed = +(3 + 2 * Math.sin((tick + offset) / 30)).toFixed(1);
-      const incline = +(1.5 + 1.5 * Math.sin((tick + offset) / 60)).toFixed(1);
-      const heartRate = Math.round(130 + 20 * Math.sin((tick + offset) / 45));
+      const speed = +(7 + 5 * Math.sin((tick + offset) / 10)).toFixed(1);
+      const incline = +(1.5 + 1.5 * Math.sin((tick + offset) / 20)).toFixed(1);
+      const heartRate = Math.round(135 + 45 * Math.sin((tick + offset) / 15));
       t.state.distance = +(t.state.distance + speed * dt).toFixed(2);
       t.state.speed = speed;
       t.state.incline = incline;
