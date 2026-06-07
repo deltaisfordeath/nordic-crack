@@ -84,7 +84,8 @@ export function SpeedWidget({ value }) {
           strokeDashoffset={dashOffset}
           opacity={ratio > 0.01 ? 1 : 0}
           style={{
-            transition: "stroke-dashoffset 0.35s ease-out, stroke 0.25s ease-out",
+            transition:
+              "stroke-dashoffset 0.35s ease-out, stroke 0.25s ease-out",
             filter: `drop-shadow(0 0 5px ${color}88)`,
           }}
         />
@@ -176,8 +177,8 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    background: "rgba(0,0,0,0.65)",
-    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgb(50,50,50)",
+    border: "1px solid rgba(200,200,200)",
     borderRadius: 12,
     padding: "14px 16px 6px",
     backdropFilter: "blur(8px)",

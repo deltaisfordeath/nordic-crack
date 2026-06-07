@@ -20,7 +20,9 @@ export function InclineWidget({ value }) {
       <div style={{ ...styles.value, color }}>{display}</div>
       <div style={styles.unit}>%</div>
       <div style={styles.barTrack}>
-        <div style={{ ...styles.barFill, width: `${fillPct}%`, background: color }} />
+        <div
+          style={{ ...styles.barFill, width: `${fillPct}%`, background: color }}
+        />
       </div>
     </div>
   );
@@ -31,8 +33,8 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    background: "rgba(0,0,0,0.65)",
-    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgb(50,50,50)",
+    border: "1px solid rgba(200,200,200)",
     borderRadius: 12,
     padding: "14px 22px",
     minWidth: 110,

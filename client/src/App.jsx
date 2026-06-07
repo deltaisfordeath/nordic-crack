@@ -10,14 +10,19 @@ function TreadmillPanel({ id, side }) {
   const { telemetry, connected } = useTreadmill(id);
 
   return (
-    <div style={{ ...styles.panel, alignItems: side === "left" ? "flex-start" : "flex-end" }}>
-      <div style={styles.statusBar}>
+    <div
+      style={{
+        ...styles.panel,
+        alignItems: side === "left" ? "flex-start" : "flex-end",
+      }}
+    >
+      {/* <div style={styles.statusBar}>
         <span style={{ ...styles.dot, background: connected ? "#66bb6a" : "#ef5350" }} />
         <span style={styles.statusText}>
           {`treadmill ${id} `}
           {connected ? "connected" : "connecting…"}
         </span>
-      </div>
+      </div> */}
 
       <div style={styles.widgetStack}>
         {telemetry.incline !== 0 && <InclineWidget value={telemetry.incline} />}
@@ -52,6 +57,7 @@ const styles = {
     justifyContent: "space-between",
     pointerEvents: "none",
     padding: "16px 32px 32px",
+    background: "#FF00CC",
   },
   replayRow: {
     display: "flex",
