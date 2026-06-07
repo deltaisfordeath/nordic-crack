@@ -6,11 +6,11 @@ const HR_MAX = 180;
 // 5-zone color coding keyed to gradient zones
 function hrColor(bpm) {
   if (bpm === null) return "#888";
-  if (bpm < 95) return "#4fc3f7"; // zone 1 – easy
-  if (bpm < 121) return "#81c784"; // zone 2 – fat burn
-  if (bpm < 146) return "#fff176"; // zone 3 – aerobic
-  if (bpm < 166) return "#ffb74d"; // zone 4 – anaerobic
-  return "#ef5350"; // zone 5 – red-line
+  if (bpm < 95) return "#4fc3f7";
+  if (bpm < 121) return "#81c784";
+  if (bpm < 146) return "#fff176";
+  if (bpm < 166) return "#ffb74d";
+  return "#ef5350";
 }
 
 function hrPercent(bpm) {
